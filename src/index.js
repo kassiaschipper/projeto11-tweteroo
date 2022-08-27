@@ -28,16 +28,24 @@ server.post("/tweets", (request, response) => {
 // GET /tweets
 server.get("/tweets", (request, response) => {
   const lastTweets = tweets.slice(-10); 
-  // [
-  //   {
-  //     username: "bobesponja",
-  //     avatar:
-  //       "https://super.abril.com.br/wp-content/uploads/2020/09/04-09_gato_SITE.jpg?quality=70&strip=info",
-  //     tweet: "eu amo o hub",
-  //   },
-  // ];
+  let usersTweet = [];
 
-  response.send(lastTweets);
+  lastTweets.forEach(value => {
+    
+    let username = value.username;
+    let tweet = value.tweet;
+    const user = users.find(value => value.username === username);
+    // Verifica se o usuário existe;
+    if (user !== undefined){
+    const post = {
+      ...user,
+      tweet,
+    } 
+    usersTweet.push(post);}
+   })
+
+
+  response.send(usersTweet);
 });
 server.listen(5000, function () {
   console.log("Listening on 5000");
