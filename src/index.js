@@ -10,34 +10,31 @@ const users = [];
 
 // POST /sign-up
 server.post("/sign-up", (request, response) => {
-  // const newUser = request.body;
   const { username, avatar } = request.body;
-  
-  if(!username || !avatar) {
-    return response.status(400).send("Todos os campos são obrigatórios!")
+
+  if (!username || !avatar) {
+    return response.status(400).send("Todos os campos são obrigatórios!");
   }
-  //users.push(newUser);
+
   users.push({
     username,
     avatar,
-  })
-  //response.send("OK")
+  });
+
   response.status(201).send("OK");
 });
 
 // POST /tweets
 server.post("/tweets", (request, response) => {
-  //const newTweet = request.body;
   const { username, tweet } = request.body;
-  //tweets.push(newTweet);
-  //response.send("OK"); 
-  if(!username || !tweet) {
-    return response.status(400).send("Todos os campos são obrigatórios!")
+
+  if (!username || !tweet) {
+    return response.status(400).send("Todos os campos são obrigatórios!");
   }
   tweets.push({
     username,
     tweet,
-  })
+  });
   response.status(201).send("OK");
 });
 
@@ -62,6 +59,29 @@ server.get("/tweets", (request, response) => {
 
   response.send(usersTweet);
 });
+
+server.get("/tweets/:username", (request, response) => {
+  const { username } = request.params;
+  const allUserTweets = [];
+
+  const filterTweets = tweets.filter((value) => value.username === username);
+
+  filterTweets.forEach((value) => {
+    let username = value.username;
+    let tweet = value.tweet;
+    const user = users.find((value) => value.username === username);
+
+    if (user !== undefined) {
+      const post = {
+        ...user,
+        tweet,
+      };
+      allUserTweets.push(post);
+    }
+  });
+  response.send(allUserTweets);
+});
+
 server.listen(5000, function () {
   console.log("Listening on 5000");
 });
